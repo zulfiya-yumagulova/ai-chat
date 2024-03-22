@@ -1,18 +1,14 @@
 import express from "express";
-import mongoose from "mongoose";
-import * as dotenv from "dotenv";
-dotenv.config();
+import cookieParser from "cookie-parser";
 
-const app = express();
-const PORT = process.env.PORT;
-const DB = process.env.MONGODB_URL;
+export const app = express();
 
 // Middleware
 app.use(express.json());
+// Cookie parser middleware
+app.use(cookieParser());
 
-mongoose.connect(DB).then(() => {
-  console.log("DB connection is successful");
-  app.listen(PORT, () => {
-    console.log(`App runs on port ${PORT}`);
-  });
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
 });
