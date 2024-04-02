@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { getAllUsers, userSignup } from "../controllers/userController.js";
+import { signupValidator, validate } from "../utils/validators.js";
 
 export const userRouter = Router();
 
@@ -7,4 +8,4 @@ export const userRouter = Router();
 userRouter.get("/", getAllUsers);
 
 // POST
-userRouter.post("/signup", userSignup);
+userRouter.post("/signup", validate(signupValidator), userSignup);
