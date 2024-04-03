@@ -9,6 +9,8 @@ import {
   signupValidator,
   validate,
 } from "../utils/validators.js";
+import { check } from "express-validator";
+import { checkAuth } from "../middleware/check-auth.js";
 
 export const userRouter = Router();
 
@@ -17,4 +19,4 @@ userRouter.get("/", getAllUsers);
 
 // POST
 userRouter.post("/signup", validate(signupValidator), userSignup);
-userRouter.post("/login", validate(loginValidator), userLogin);
+userRouter.post("/login", checkAuth, validate(loginValidator), userLogin);
