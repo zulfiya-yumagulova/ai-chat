@@ -8,3 +8,7 @@ body {
   color: #31363f;
   font-family: "Roboto Slab";
 }
+
+.ai-logo {
+  filter: invert(100%);
+}
