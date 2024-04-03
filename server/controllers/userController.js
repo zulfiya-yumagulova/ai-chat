@@ -1,5 +1,6 @@
 import { User } from "../models/User.js";
 import { hash, compare } from "bcrypt";
+import jwt from "jsonwebtoken";
 
 // GET all users
 export const getAllUsers = async (req, res, next) => {
@@ -19,7 +20,7 @@ export const getAllUsers = async (req, res, next) => {
   }
 };
 
-// POST User
+// POST User sign up request
 export const userSignup = async (req, res, next) => {
   const { name, email, password } = req.body;
   //   Check if User already exists
@@ -36,6 +37,30 @@ export const userSignup = async (req, res, next) => {
   });
 
   await user.save();
+
+  // Generate JWT Token
+  const token = createToken(user._id.toString(), user.email, "7d");
+
+  // Create expire token validation
+  const expiresIn = new Date();
+  expiresIn.setDate(expiresIn.getDate() + 7);
+
+  res.cookie(COOKIE_NAME, token, {
+    path: "/",
+    domain: "localhost",
+    expiresIn,
+    httpOnly: true,
+    signed: true,
+  });
+
+  // Remove previous cookies and asiign new
+  res.clearCookie(COOKIE_NAME, {
+    httpOnly: true,
+    domain: "localhost",
+    signed: true,
+    path: "/",
+  });
+
   if (user) {
     return res.status(201).json({
       message: "success",
@@ -50,7 +75,7 @@ export const userSignup = async (req, res, next) => {
   }
 };
 
-// User Login Request
+// POST  User Login Request
 
 export const userLogin = async (req, res, next) => {
   try {
@@ -65,25 +90,41 @@ export const userLogin = async (req, res, next) => {
     if (!isPasswordCorrect) {
       return res.status(403).send("Incorrect password");
     }
+    // // Generate JWT Token
+    const token = jwt.sign({ email, password }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+    // const token = createToken(
+    //   existingUser._id.toString(),
+    //   existingUser.email,
+    //   "7d"
+    // );
+
+    // // Create expire token validation
+    // const expiresIn = new Date();
+    // expiresIn.setDate(expiresIn.getDate() + 7);
+
+    // res.cookie(COOKIE_NAME, token, {
+    //   path: "/",
+    //   domain: "localhost",
+    //   expiresIn,
+    //   httpOnly: true,
+    //   signed: true,
+    // });
+
+    // // Remove previous cookies and asiign new
+    // res.clearCookie(COOKIE_NAME, {
+    //   httpOnly: true,
+    //   domain: "localhost",
+    //   signed: true,
+    //   path: "/",
+    // });
+
     // Success (User exists and password is correct)
     return res
       .status(200)
-      .json({ message: "success", id: existingUser._id.toString() });
+      .json({ message: "success", token, id: existingUser._id.toString() });
   } catch (error) {
     return res.status(400).json({ message: "ERROR", error });
   }
-
-  // await user.save();
-  // if (user) {
-  //   return res.status(201).json({
-  //     message: "success",
-  //     user,
-  //   });
-  // } else {
-  //   console.log(error);
-  //   res.status(403).json({
-  //     message: "ERROR",
-  //     cause: error,
-  //   });
-  // }
 };

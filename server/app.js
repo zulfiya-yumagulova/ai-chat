@@ -8,7 +8,7 @@ export const app = express();
 // Middleware
 app.use(express.json());
 // Cookie parser middleware
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
 app.use(morgan("dev"));
 
