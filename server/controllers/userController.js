@@ -45,9 +45,7 @@ export const userSignup = async (req, res, next) => {
   const expiresIn = new Date();
   expiresIn.setDate(expiresIn.getDate() + 7);
 
-  res.cookie(COOKIE_NAME, token, {
-    path: "/",
-    domain: "localhost",
+  res.cookie("auth_token", token, {
     expiresIn,
     httpOnly: true,
     signed: true,
@@ -94,26 +92,19 @@ export const userLogin = async (req, res, next) => {
     const token = jwt.sign({ email, password }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
-    // const token = createToken(
-    //   existingUser._id.toString(),
-    //   existingUser.email,
-    //   "7d"
-    // );
 
-    // // Create expire token validation
+    // Create expire token validation
     // const expiresIn = new Date();
     // expiresIn.setDate(expiresIn.getDate() + 7);
 
-    // res.cookie(COOKIE_NAME, token, {
-    //   path: "/",
-    //   domain: "localhost",
+    // res.cookie("auth_token", token, {
     //   expiresIn,
     //   httpOnly: true,
     //   signed: true,
     // });
 
-    // // Remove previous cookies and asiign new
-    // res.clearCookie(COOKIE_NAME, {
+    // // // Remove previous cookies and asiign new
+    // res.clearCookie("auth_token", {
     //   httpOnly: true,
     //   domain: "localhost",
     //   signed: true,
