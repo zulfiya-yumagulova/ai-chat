@@ -6,7 +6,9 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Chat from "./pages/Chat";
 import NotFound from "./pages/NotFound";
-
+import { useAuth } from "./context/AuthContext";
+// eslint-disable-next-line react-hooks/rules-of-hooks
+console.log(useAuth()?.isLoggedIn);
 function App() {
   return (
     <>

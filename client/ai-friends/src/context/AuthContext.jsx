@@ -1,4 +1,5 @@
-import { createContext, useState, useEffect } from "react";
+/* eslint-disable react/prop-types */
+import { createContext, useState, useEffect, useContext } from "react";
 
 const AuthContext = createContext(null);
 
@@ -20,3 +21,5 @@ export function AuthProvider({ children }) {
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
+
+export const useAuth = () => useContext(AuthContext);
